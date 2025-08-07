@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNO - Jogo Contra o Computador</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>UNO - Jogo Contra o Computador</h1>
+        
+        <div id="game-board">
+            <div id="player-cards" class="card-container">
+                <h2>Suas Cartas:</h2>
+                <div id="player-cards-list"></div>
+            </div>
+
+            <div id="center-card">
+                <h2>Carta Central</h2>
+                <div id="center-card-display"></div>
+            </div>
+
+            <div id="computer-cards" class="card-container">
+                <h2>Cartas do Computador:</h2>
+                <div id="computer-cards-list"></div>
+            </div>
+
+            <div id="message"></div>
+            <button id="start-btn" onclick="startGame()">Iniciar Jogo</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
