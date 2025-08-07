@@ -1,0 +1,98 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    flex-direction: column;
+}
+
+.game-container {
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 500px;
+}
+
+.card-container {
+    margin: 20px;
+}
+
+.card {
+    width: 60px;
+    height: 90px;
+    margin: 10px;
+    background-color: #f9b233;
+    border-radius: 5px;
+    display: inline-block;
+    text-align: center;
+    line-height: 90px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#center-card {
+    margin-top: 30px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#message {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+    color: #333;
+}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNO - Jogo Contra o Computador</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>UNO - Jogo Contra o Computador</h1>
+        
+        <div id="game-board">
+            <div id="player-cards" class="card-container">
+                <h2>Suas Cartas:</h2>
+                <div id="player-cards-list"></div>
+            </div>
+
+            <div id="center-card">
+                <h2>Carta Central</h2>
+                <div id="center-card-display"></div>
+            </div>
+
+            <div id="computer-cards" class="card-container">
+                <h2>Cartas do Computador:</h2>
+                <div id="computer-cards-list"></div>
+            </div>
+
+            <div id="message"></div>
+            <button id="start-btn" onclick="startGame()">Iniciar Jogo</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
