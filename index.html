@@ -3,35 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jogo de UNO</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>UNO Online</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Jogo de UNO</h1>
-    <div id="gameArea">
-      <div id="cartaAtualArea">
-        <h2>Carta Atual</h2>
-        <div id="cartaAtual" class="carta">Nenhuma</div>
-      </div>
-
-      <div id="maoJogador">
+  <div class="game-container">
+    <div id="game-area">
+      <div id="player-cards">
         <h3>Sua Mão</h3>
-        <div id="cartasMao">
-          <!-- Cartas do jogador serão adicionadas aqui -->
+        <div id="player-hand">
+          <!-- Cartas do jogador serão exibidas aqui -->
         </div>
       </div>
 
-      <button id="comprarCartaBtn">Comprar Carta</button>
-      <div id="mensagem"></div>
-    </div>
-    <div id="resultados">
-      <h2>Resultados</h2>
-      <p id="vencedor"></p>
-    </div>
-  </div>
-  
-  <script src="script.js"></script>
-</body>
-</html>
+      <div id="game-table">
+        <h2>Carta Atual</h2>
+        <div id="current-card" class="card">
+          <!-- Carta na mesa -->
+        </div>
+      </div>
 
+      <div id="game-controls">
+        <butto
