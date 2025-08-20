@@ -9,13 +9,14 @@ let cartaAtual = null;
 function criarBaralho() {
   baralho = [];
 
+  // Cartas normais
   for (let cor of cores) {
     for (let valor of valores) {
       baralho.push({ cor, valor });
     }
   }
 
-  // Adiciona as cartas especiais (Coringa e Coringa Comprar Quatro)
+  // Cartas especiais (Coringa e Coringa Comprar Quatro)
   for (let i = 0; i < 4; i++) {
     baralho.push({ cor: 'preto', valor: 'Coringa' });
     baralho.push({ cor: 'preto', valor: 'Coringa Comprar Quatro' });
