@@ -1,36 +1,36 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UNO - Jogo Contra o Computador</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo de UNO</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="game-container">
-        <h1>UNO - Jogo Contra o Computador</h1>
-        
-        <div id="game-board">
-            <div id="player-cards" class="card-container">
-                <h2>Suas Cartas:</h2>
-                <div id="player-cards-list"></div>
-            </div>
+  <div class="container">
+    <h1>Jogo de UNO</h1>
+    <div id="gameArea">
+      <div id="cartaAtualArea">
+        <h2>Carta Atual</h2>
+        <div id="cartaAtual" class="carta">Nenhuma</div>
+      </div>
 
-            <div id="center-card">
-                <h2>Carta Central</h2>
-                <div id="center-card-display"></div>
-            </div>
-
-            <div id="computer-cards" class="card-container">
-                <h2>Cartas do Computador:</h2>
-                <div id="computer-cards-list"></div>
-            </div>
-
-            <div id="message"></div>
-            <button id="start-btn" onclick="startGame()">Iniciar Jogo</button>
+      <div id="maoJogador">
+        <h3>Sua Mão</h3>
+        <div id="cartasMao">
+          <!-- Cartas do jogador serão adicionadas aqui -->
         </div>
-    </div>
+      </div>
 
-    <script src="script.js"></script>
+      <button id="comprarCartaBtn">Comprar Carta</button>
+      <div id="mensagem"></div>
+    </div>
+    <div id="resultados">
+      <h2>Resultados</h2>
+      <p id="vencedor"></p>
+    </div>
+  </div>
+  
+  <script src="game.js"></script>
 </body>
 </html>

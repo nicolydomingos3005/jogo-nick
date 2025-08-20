@@ -1,104 +1,99 @@
-let playerCards = [];
-let computerCards = [];
-let centerCard = {};
-let gameStarted = false;
+const cores = ['vermelho', 'azul', 'verde', 'amarelo'];
+const valores = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'Reverso', 'Pular', 'Comprar Duas'];
+const tiposEspeciais = ['Coringa', 'Coringa Comprar Quatro'];
+let baralho = [];
+let maoJogador = [];
+let cartaAtual = null;
 
-const colors = ['red', 'green', 'blue', 'yellow'];
-const values = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'skip', 'reverse', 'draw2'];
+// Função para criar o baralho
+function criarBaralho() {
+  baralho = [];
 
-const startBtn = document.getElementById('start-btn');
-const playerCardsList = document.getElementById('player-cards-list');
-const centerCardDisplay = document.getElementById('center-card-display');
-const messageDisplay = document.getElementById('message');
-
-function startGame() {
-    gameStarted = true;
-    startBtn.disabled = true;
-    messageDisplay.textContent = "Jogo Iniciado!";
-
-    playerCards = generateCards(7);
-    computerCards = generateCards(7);
-    centerCard = generateCard();
-
-    updateDisplay();
-    gameLoop();
-}
-
-function generateCard() {
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    const value = values[Math.floor(Math.random() * values.length)];
-    return { color, value };
-}
-
-function generateCards(number) {
-    let cards = [];
-    for (let i = 0; i < number; i++) {
-        cards.push(generateCard());
+  for (let cor of cores) {
+    for (let valor of valores) {
+      baralho.push({ cor, valor });
     }
-    return cards;
+  }
+
+  // Adiciona as cartas especiais (Coringa e Coringa Comprar Quatro)
+  for (let i = 0; i < 4; i++) {
+    baralho.push({ cor: 'preto', valor: 'Coringa' });
+    baralho.push({ cor: 'preto', valor: 'Coringa Comprar Quatro' });
+  }
+
+  // Embaralhar
+  baralho = baralho.sort(() => Math.random() - 0.5);
 }
 
-function updateDisplay() {
-    // Atualiza as cartas do jogador
-    playerCardsList.innerHTML = '';
-    playerCards.forEach((card, index) => {
-        const cardDiv = document.createElement('div');
-        cardDiv.classList.add('card');
-        cardDiv.textContent = card.value;
-        cardDiv.style.backgroundColor = card.color;
-        cardDiv.onclick = () => playCard(index);
-        playerCardsList.appendChild(cardDiv);
-    });
+// Função para iniciar o jogo
+function iniciarJogo() {
+  criarBaralho();
+  maoJogador = baralho.splice(0, 7); // Jogador começa com 7 cartas
 
-    // Atualiza a carta central
-    centerCardDisplay.textContent = centerCard.value;
-    centerCardDisplay.style.backgroundColor = centerCard.color;
+  cartaAtual = baralho.pop(); // A carta inicial é retirada do baralho
 
-    // Atualiza a mensagem do jogo
-    messageDisplay.textContent = "Sua vez de jogar!";
+  document.getElementById('cartaAtual').textContent = `${cartaAtual.valor} de ${cartaAtual.cor}`;
+  atualizarMaoJogador();
+
+  // Habilitar botão de "Comprar Carta"
+  document.getElementById('comprarCartaBtn').disabled = false;
 }
 
-function playCard(cardIndex) {
-    const card = playerCards[cardIndex];
-    
-    if (card.color === centerCard.color || card.value === centerCard.value) {
-        centerCard = card;
-        playerCards.splice(cardIndex, 1);
-        messageDisplay.textContent = "Você jogou a carta " + card.value + "!";
-        checkGameStatus();
-        setTimeout(() => computerTurn(), 1000); // Computador joga após 1 segundo
-    } else {
-        messageDisplay.textContent = "A carta não pode ser jogada, escolha outra.";
+// Função para atualizar as cartas na mão do jogador
+function atualizarMaoJogador() {
+  const maoElement = document.getElementById('cartasMao');
+  maoElement.innerHTML = '';
+
+  maoJogador.forEach((carta, index) => {
+    const cartaDiv = document.createElement('div');
+    cartaDiv.classList.add('carta');
+    cartaDiv.textContent = `${carta.valor} de ${carta.cor}`;
+    cartaDiv.onclick = () => jogarCarta(index);
+    maoElement.appendChild(cartaDiv);
+  });
+}
+
+// Função para jogar uma carta
+function jogarCarta(index) {
+  const cartaEscolhida = maoJogador[index];
+
+  // Verifica se a carta pode ser jogada
+  if (podeJogar(cartaEscolhida)) {
+    cartaAtual = cartaEscolhida;
+    maoJogador.splice(index, 1); // Remove a carta jogada
+    document.getElementById('cartaAtual').textContent = `${cartaAtual.valor} de ${cartaAtual.cor}`;
+    atualizarMaoJogador();
+
+    if (maoJogador.length === 0) {
+      document.getElementById('vencedor').textContent = 'Você venceu!';
+      document.getElementById('comprarCartaBtn').disabled = true;
     }
+  } else {
+    alert('Você não pode jogar esta carta!');
+  }
 }
 
-function computerTurn() {
-    messageDisplay.textContent = "Agora é a vez do computador...";
-
-    setTimeout(() => {
-        const playableCards = computerCards.filter(card => card.color === centerCard.color || card.value === centerCard.value);
-        
-        if (playableCards.length > 0) {
-            const randomCard = playableCards[Math.floor(Math.random() * playableCards.length)];
-            centerCard = randomCard;
-            computerCards = computerCards.filter(card => card !== randomCard);
-            messageDisplay.textContent = "O computador jogou a carta " + randomCard.value;
-        } else {
-            messageDisplay.textContent = "O computador não tem cartas para jogar, ele passa a vez.";
-        }
-
-        checkGameStatus();
-    }, 1000);
+// Função para verificar se a carta pode ser jogada
+function podeJogar(carta) {
+  return carta.cor === cartaAtual.cor || carta.valor === cartaAtual.valor || carta.valor === 'Coringa' || carta.valor === 'Coringa Comprar Quatro';
 }
 
-function checkGameStatus() {
-    if (playerCards.length === 0) {
-        messageDisplay.textContent = "Parabéns! Você venceu!";
-        startBtn.disabled = false;
-    } else if (computerCards.length === 0) {
-        messageDisplay.textContent = "O computador venceu!";
-        startBtn.disabled = false;
-    } else {
-        updateDisplay();
-    }
+// Função para comprar uma carta
+function comprarCarta() {
+  if (baralho.length === 0) {
+    alert('Baralho vazio!');
+    return;
+  }
+
+  const cartaComprada = baralho.pop();
+  maoJogador.push(cartaComprada);
+  atualizarMaoJogador();
 }
+
+// Ação do botão Comprar Carta
+document.getElementById('comprarCartaBtn').addEventListener('click', () => {
+  comprarCarta();
+});
+
+// Iniciar o jogo ao carregar a página
+window.onload = iniciarJogo;
