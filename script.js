@@ -1,95 +1,32 @@
-const cores = ['vermelho', 'azul', 'verde', 'amarelo'];
-const valores = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'Reverso', 'Pular', 'Comprar Duas'];
-const tiposEspeciais = ['Coringa', 'Coringa Comprar Quatro'];
+let numeroAleatorio = Math.floor(Math.random() * 100) + 1;  // Número aleatório entre 1 e 100
+let tentativas = 0;
 
-let baralho = [];
-let maoJogador = [];
-let cartaAtual = null;
-let jogoIniciado = false;
+const inputGuess = document.getElementById('guess');
+const buttonCheck = document.getElementById('check-btn');
+const messageElement = document.getElementById('message');
+const attemptsElement = document.getElementById('attempts');
 
-// Função para criar o baralho
-function criarBaralho() {
-  baralho = [];
-  for (let cor of cores) {
-    for (let valor of valores) {
-      baralho.push({ cor, valor });
+buttonCheck.addEventListener('click', () => {
+    let palpite = Number(inputGuess.value);  // O palpite do jogador
+    tentativas++;  // Incrementa o número de tentativas
+
+    if (palpite < 1 || palpite > 100 || isNaN(palpite)) {
+        messageElement.textContent = "Por favor, insira um número entre 1 e 100!";
+        messageElement.style.color = "red";
+        return;
     }
-  }
-  // Cartas especiais
-  for (let i = 0; i < 4; i++) {
-    baralho.push({ cor: 'preto', valor: 'Coringa' });
-    baralho.push({ cor: 'preto', valor: 'Coringa Comprar Quatro' });
-  }
-  // Embaralhando o baralho
-  baralho = baralho.sort(() => Math.random() - 0.5);
-}
 
-// Função para iniciar o jogo
-function iniciarJogo() {
-  if (jogoIniciado) return;
-  jogoIniciado = true;
-  criarBaralho();
-  maoJogador = baralho.splice(0, 7); // Jogador começa com 7 cartas
-  cartaAtual = baralho.pop(); // Carta inicial
-  
-  document.getElementById('current-card').textContent = `${cartaAtual.valor} de ${cartaAtual.cor}`;
-  atualizarMaoJogador();
-
-  document.getElementById('draw-card-btn').disabled = false;
-  document.getElementById('end-turn-btn').disabled = false;
-}
-
-// Função para atualizar as cartas na mão do jogador
-function atualizarMaoJogador() {
-  const maoElement = document.getElementById('player-hand');
-  maoElement.innerHTML = '';
-
-  maoJogador.forEach((carta, index) => {
-    const cartaDiv = document.createElement('div');
-    cartaDiv.classList.add('card');
-    cartaDiv.textContent = `${carta.valor} de ${carta.cor}`;
-    cartaDiv.onclick = () => jogarCarta(index);
-    maoElement.appendChild(cartaDiv);
-  });
-}
-
-// Função para verificar se uma carta pode ser jogada
-function podeJogar(carta) {
-  return carta.cor === cartaAtual.cor || carta.valor === cartaAtual.valor || carta.valor === 'Coringa' || carta.valor === 'Coringa Comprar Quatro';
-}
-
-// Função para jogar uma carta
-function jogarCarta(index) {
-  const cartaEscolhida = maoJogador[index];
-  if (podeJogar(cartaEscolhida)) {
-    cartaAtual = cartaEscolhida;
-    maoJogador.splice(index, 1); // Remove a carta jogada
-    document.getElementById('current-card').textContent = `${cartaAtual.valor} de ${cartaAtual.cor}`;
-    atualizarMaoJogador();
-
-    if (maoJogador.length === 0) {
-      alert('Você venceu!');
-      document.getElementById('draw-card-btn').disabled = true;
+    if (palpite < numeroAleatorio) {
+        messageElement.textContent = "Muito baixo! Tente novamente.";
+        messageElement.style.color = "orange";
+    } else if (palpite > numeroAleatorio) {
+        messageElement.textContent = "Muito alto! Tente novamente.";
+        messageElement.style.color = "orange";
+    } else {
+        messageElement.textContent = `Você acertou! O número era ${numeroAleatorio}.`;
+        messageElement.style.color = "green";
+        buttonCheck.disabled = true;  // Desabilita o botão depois que o jogador acertar
     }
-  } else {
-    alert('Essa carta não pode ser jogada!');
-  }
-}
 
-// Função para comprar uma carta
-function comprarCarta() {
-  if (baralho.length === 0) {
-    alert('O baralho está vazio!');
-    return;
-  }
-
-  const cartaComprada = baralho.pop();
-  maoJogador.push(cartaComprada);
-  atualizarMaoJogador();
-}
-
-// Ação do botão de comprar carta
-document.getElementById('draw-card-btn').addEventListener('click', comprarCarta);
-
-// Ação do botão de iniciar jogo
-document.getElementById('end-turn-btn').addEventListener('click', iniciarJogo);
+    attemptsElement.textContent = `Tentativas: ${tentativas}`;
+});

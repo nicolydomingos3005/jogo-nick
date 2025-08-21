@@ -1,97 +1,65 @@
-/* Reset */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(to top, #f4f4f4, #e1e1e1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
 }
 
-/* Jogo */
 .game-container {
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  width: 80%;
-  max-width: 1000px;
-  padding: 20px;
-  text-align: center;
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
 }
 
-#game-area {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+h1 {
+    font-size: 1.5rem;
+    color: #333;
 }
 
-#game-table {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 20px;
-  position: relative;
-}
-
-#current-card {
-  width: 100px;
-  height: 150px;
-  background-color: lightgray;
-  margin: 0 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.2em;
-  border-radius: 5px;
-}
-
-#player-hand {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.card {
-  width: 80px;
-  height: 120px;
-  margin: 5px;
-  border-radius: 5px;
-  background-color: lightgray;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.2em;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s;
-}
-
-.card:hover {
-  transform: scale(1.1);
+input[type="number"] {
+    padding: 10px;
+    margin: 20px 0;
+    font-size: 1rem;
+    width: 80%;
+    border: 2px solid #ccc;
+    border-radius: 5px;
 }
 
 button {
-  padding: 10px 20px;
-  margin: 10px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1.2em;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #218838;
+    background-color: #45a049;
 }
 
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+#message {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+#attempts {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #555;
 }
