@@ -3,21 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo de Adivinhação de Número</title>
+    <title>Jogo da Cobrinha</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="game-container">
-        <h1>Jogo de Adivinhação de Número</h1>
-        <p>Advinhe um número entre 1 e 100</p>
-        
-        <input type="number" id="guess" placeholder="Digite seu palpite" min="1" max="100">
-        <button id="check-btn">Adivinhar</button>
-        <button id="retry-btn" class="hidden">Tentar Novamente</button>
-        <button id="play-again-btn" class="hidden">Jogar Novamente</button>
-
-        <p id="message"></p>
-        <p id="attempts">Tentativas: 0</p>
+        <h1>Jogo da Cobrinha</h1>
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+        <div id="score">
+            <p>Pontuação: <span id="scoreValue">0</span></p>
+        </div>
     </div>
 
     <script src="script.js"></script>

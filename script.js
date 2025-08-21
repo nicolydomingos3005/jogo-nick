@@ -1,58 +1,124 @@
-let numeroAleatorio = Math.floor(Math.random() * 100) + 1;  // Número aleatório entre 1 e 100
-let tentativas = 0;
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
-const inputGuess = document.getElementById('guess');
-const buttonCheck = document.getElementById('check-btn');
-const buttonRetry = document.getElementById('retry-btn');
-const buttonPlayAgain = document.getElementById('play-again-btn');
-const messageElement = document.getElementById('message');
-const attemptsElement = document.getElementById('attempts');
+const gridSize = 20; // Tamanho do grid (tamanho da "célula" da cobrinha e das frutas)
+let snake = [{ x: 100, y: 100 }];  // Cobrinha começando na posição (100, 100)
+let fruit = { x: 200, y: 200 };    // Fruta gerada aleatoriamente
+let score = 0;
+let dx = gridSize;  // Direção inicial (para a direita)
+let dy = 0;
+let changingDirection = false;  // Previne mudanças rápidas de direção
 
-buttonCheck.addEventListener('click', () => {
-    let palpite = Number(inputGuess.value);  // O palpite do jogador
-    tentativas++;  // Incrementa o número de tentativas
+// Função para desenhar a cobrinha
+function drawSnake() {
+    snake.forEach(segment => {
+        ctx.fillStyle = "#00FF00";  // Cor da cobrinha
+        ctx.fillRect(segment.x, segment.y, gridSize, gridSize);
+    });
+}
 
-    if (palpite < 1 || palpite > 100 || isNaN(palpite)) {
-        messageElement.textContent = "Por favor, insira um número entre 1 e 100!";
-        messageElement.style.color = "red";
-        return;
-    }
+// Função para desenhar a fruta
+function drawFruit() {
+    ctx.fillStyle = "#FF0000";  // Cor da fruta
+    ctx.fillRect(fruit.x, fruit.y, gridSize, gridSize);
+}
 
-    if (palpite < numeroAleatorio) {
-        messageElement.textContent = "Muito baixo! Tente novamente.";
-        messageElement.style.color = "orange";
-    } else if (palpite > numeroAleatorio) {
-        messageElement.textContent = "Muito alto! Tente novamente.";
-        messageElement.style.color = "orange";
+// Função para movimentar a cobrinha
+function moveSnake() {
+    const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+    snake.unshift(head);  // Adiciona a nova cabeça da cobrinha no início do array
+
+    // Verificar se a cobrinha comeu a fruta
+    if (head.x === fruit.x && head.y === fruit.y) {
+        score++;
+        document.getElementById("scoreValue").textContent = score;
+        generateFruit();  // Gera uma nova fruta
     } else {
-        messageElement.textContent = `Você acertou! O número era ${numeroAleatorio}.`;
-        messageElement.style.color = "green";
-        buttonCheck.disabled = true;  // Desabilita o botão depois que o jogador acertar
-        buttonRetry.classList.add('hidden');  // Esconde o botão de tentar novamente
-        buttonPlayAgain.classList.remove('hidden');  // Mostra o botão de jogar novamente
+        snake.pop();  // Remove o último segmento da cobrinha (movimento)
+    }
+}
+
+// Função para gerar a fruta em uma posição aleatória
+function generateFruit() {
+    const x = Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize;
+    const y = Math.floor(Math.random() * (canvas.height / gridSize)) * gridSize;
+    fruit = { x, y };
+}
+
+// Função para controlar a direção da cobrinha
+function changeDirection(event) {
+    if (changingDirection) return;
+    changingDirection = true;
+
+    if (event.key === "ArrowUp" && dy === 0) {
+        dx = 0;
+        dy = -gridSize;
+    } else if (event.key === "ArrowDown" && dy === 0) {
+        dx = 0;
+        dy = gridSize;
+    } else if (event.key === "ArrowLeft" && dx === 0) {
+        dx = -gridSize;
+        dy = 0;
+    } else if (event.key === "ArrowRight" && dx === 0) {
+        dx = gridSize;
+        dy = 0;
+    }
+}
+
+// Função para verificar colisões com a parede ou com a própria cobrinha
+function checkCollisions() {
+    const head = snake[0];
+
+    // Colisão com a parede
+    if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
+        return true;
     }
 
-    attemptsElement.textContent = `Tentativas: ${tentativas}`;
-});
+    // Colisão com a própria cobrinha
+    for (let i = 1; i < snake.length; i++) {
+        if (head.x === snake[i].x && head.y === snake[i].y) {
+            return true;
+        }
+    }
 
-// Evento de Tentar Novamente (resetar o campo, manter o número)
-buttonRetry.addEventListener('click', () => {
-    inputGuess.value = '';  // Limpa o campo de entrada
-    buttonCheck.disabled = false;  // Habilita o botão de tentar
-    messageElement.textContent = '';  // Limpa a mensagem
-    tentativas = 0;  // Reseta as tentativas
-    attemptsElement.textContent = `Tentativas: ${tentativas}`;
-    buttonRetry.classList.add('hidden');  // Esconde o botão de tentar novamente
-});
+    return false;
+}
 
-// Evento de Jogar Novamente (gerar um novo número aleatório)
-buttonPlayAgain.addEventListener('click', () => {
-    numeroAleatorio = Math.floor(Math.random() * 100) + 1;  // Novo número aleatório
-    tentativas = 0;  // Reseta o número de tentativas
-    inputGuess.value = '';  // Limpa o campo de entrada
-    buttonCheck.disabled = false;  // Habilita o botão de adivinhar
-    messageElement.textContent = '';  // Limpa a mensagem
-    attemptsElement.textContent = `Tentativas: ${tentativas}`;
-    buttonRetry.classList.add('hidden');  // Esconde o botão de tentar novamente
-    buttonPlayAgain.classList.add('hidden');  // Esconde o botão de jogar novamente
-});
+// Função principal de atualização
+function update() {
+    changingDirection = false;
+    moveSnake();
+    if (checkCollisions()) {
+        resetGame();  // Reseta o jogo se houver colisão
+    }
+    drawGame();
+}
+
+// Função para desenhar o jogo
+function drawGame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);  // Limpa o canvas
+    drawSnake();
+    drawFruit();
+}
+
+// Função para resetar o jogo
+function resetGame() {
+    snake = [{ x: 100, y: 100 }];
+    dx = gridSize;
+    dy = 0;
+    score = 0;
+    document.getElementById("scoreValue").textContent = score;
+    generateFruit();
+}
+
+// Adicionando o evento de pressionar as teclas para mudar a direção
+document.addEventListener("keydown", changeDirection);
+
+// Inicia o jogo
+function gameLoop() {
+    update();
+    setTimeout(gameLoop, 100);  // Controla a velocidade do jogo (100ms por frame)
+}
+
+// Inicia o loop do jogo
+gameLoop();
