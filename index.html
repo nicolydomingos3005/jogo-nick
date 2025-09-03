@@ -1,20 +1,19 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo da Cobrinha</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jogo da Cobrinha</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <div class="game-container">
-        <h1>Jogo da Cobrinha</h1>
-        <canvas id="gameCanvas" width="400" height="400"></canvas>
-        <div id="score">
-            <p>Pontuação: <span id="scoreValue">0</span></p>
-        </div>
+  <div id="game-container">
+    <canvas id="gameCanvas" width="600" height="600"></canvas>
+    <div id="gameOver">
+      <h2>Você morreu!</h2>
+      <button onclick="restartGame()">Tentar novamente</button>
     </div>
+  </div>
+  <script src="script.js"></script>
+</b
 
-    <script src="script.js"></script>
-</body>
-</html>
