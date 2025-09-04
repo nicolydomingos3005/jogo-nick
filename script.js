@@ -14,7 +14,7 @@ let direction;
 let npcSnakes;
 let gameInterval;
 let isGameOver = false;
-let lives = 5;  // Agora o jogador começa com 5 vidas
+let lives = 5;  // O jogador começa com 5 vidas
 let speed = initialSpeed;
 let score = 0;
 
@@ -177,11 +177,14 @@ function handleLifeLoss() {
 }
 
 function resetGame() {
+  // Reposicionar a cobra no meio
   snake.body = [
     { x: gridSize * 5, y: gridSize * 5 },
     { x: gridSize * 4, y: gridSize * 5 },
   ];
+
   food = spawnFood(10);  // Gerar novas bolinhas de comida
+  document.getElementById("gameOver").style.display = "none";  // Ocultar a tela de 'Game Over'
 }
 
 function endGame() {
@@ -195,7 +198,7 @@ function endGame() {
 }
 
 function restartGame() {
-  init();
+  init();  // Reinicia o jogo
 }
 
 function draw() {
@@ -212,28 +215,4 @@ function draw() {
   ctx.fillStyle = "white";
   ctx.font = "20px Arial";
   ctx.fillText(`Pontuação: ${score}`, 10, 30);
-  ctx.fillText(`Vidas: ${lives}`, 10, 50);
-}
-
-function drawSnake(snakeObj) {
-  ctx.fillStyle = snakeObj.color;
-  snakeObj.body.forEach(part => {
-    ctx.fillRect(part.x, part.y, gridSize, gridSize); // Desenho básico
-  });
-}
-
-function drawFood(foodObj) {
-  ctx.fillStyle = foodObj.color;
-  ctx.beginPath();
-  ctx.arc(
-    foodObj.x + gridSize / 2,
-    foodObj.y + gridSize / 2,
-    gridSize / 2 - 2,
-    0,
-    Math.PI * 2
-  );
-  ctx.fill();
-}
-
-
-
+  ctx.fillText(`Vidas: ${
