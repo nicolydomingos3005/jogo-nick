@@ -3,6 +3,7 @@ const ctx = canvas.getContext("2d");
 
 const gridSize = 20;
 const canvasSize = 600;
+const initialSpeed = 150;  // Velocidade inicial (menor é mais lento)
 
 canvas.width = canvasSize;
 canvas.height = canvasSize;
@@ -14,7 +15,7 @@ let npcSnakes;
 let gameInterval;
 let isGameOver = false;
 let lives = 3;
-let speed = 200; // Controla a velocidade da cobra
+let speed = initialSpeed;
 let score = 0;
 
 function randomPosition() {
@@ -63,7 +64,7 @@ function init() {
     npc.body[0].x = randomPosition();
     npc.body[0].y = randomPosition();
   });
-  food = spawnFood(5); // Gerar várias bolinhas de comida
+  food = spawnFood(10); // Gerar mais bolinhas de comida
   score = 0;
   lives = 3;
   isGameOver = false;
@@ -114,14 +115,14 @@ function moveSnake(snakeObj) {
       food.splice(index, 1); // Remover a bolinha comida
       food.push(...spawnFood(1)); // Gerar uma nova bolinha de comida
       score += 10; // Aumentar a pontuação
-      speed = Math.max(100, speed - 10); // Aumentar a velocidade conforme a pontuação
+      speed = Math.max(100, speed - 5); // Aumentar a velocidade conforme a pontuação
       clearInterval(gameInterval);
       gameInterval = setInterval(gameLoop, speed); // Atualizar intervalo com a nova velocidade
     }
   });
 
   if (head.x === food.x && head.y === food.y) {
-    food = spawnFood(5);
+    food = spawnFood(10);  // Gerar novas bolinhas de comida
   } else {
     snakeObj.body.pop();
   }
@@ -180,7 +181,7 @@ function resetGame() {
     { x: gridSize * 5, y: gridSize * 5 },
     { x: gridSize * 4, y: gridSize * 5 },
   ];
-  food = spawnFood(5);  // Gerar novas bolinhas de comida
+  food = spawnFood(10);  // Gerar novas bolinhas de comida
 }
 
 function endGame() {
@@ -217,7 +218,21 @@ function draw() {
 function drawSnake(snakeObj) {
   ctx.fillStyle = snakeObj.color;
   snakeObj.body.forEach(part => {
-    ctx.fillRect(part.x, part.y, gridSize, gridSize);  // Desenha um quadrado para cada parte da cobra
+    ctx.fillRect(part.x, part.y, gridSize, gridSize); // Desenho básico
   });
 }
+
+function drawFood(foodObj) {
+  ctx.fillStyle = foodObj.color;
+  ctx.beginPath();
+  ctx.arc(
+    foodObj.x + gridSize / 2,
+    foodObj.y + gridSize / 2,
+    gridSize / 2 - 2,
+    0,
+    Math.PI * 2
+  );
+  ctx.fill();
+}
+
 
