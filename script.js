@@ -2,7 +2,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 const gridSize = 20;
-const canvasSize = 600;  // Tamanho do canvas
+const canvasSize = 600;
 
 canvas.width = canvasSize;
 canvas.height = canvasSize;
@@ -13,7 +13,9 @@ let direction;
 let npcSnakes;
 let gameInterval;
 let isGameOver = false;
-let lives = 3;  // Vidas extras (inicializando com 3 vidas)
+let lives = 3;
+let speed = 200; // Controla a velocidade da cobra
+let score = 0;
 
 function randomPosition() {
   const pos = Math.floor(Math.random() * (canvasSize / gridSize));
@@ -37,5 +39,185 @@ function createMultipleNPCs(num) {
   return npcs;
 }
 
-food.push(...spawnFood(1));
+function spawnFood(num) {
+  let newFood = [];
+  for (let i = 0; i < num; i++) {
+    newFood.push({
+      x: randomPosition(),
+      y: randomPosition(),
+      color: `hsl(${Math.random() * 360}, 100%, 50%)`
+    });
+  }
+  return newFood;
+}
+
+function init() {
+  snake = createSnake("lime");
+  snake.body = [
+    { x: gridSize * 5, y: gridSize * 5 },
+    { x: gridSize * 4, y: gridSize * 5 },
+  ];
+  direction = "RIGHT";
+  npcSnakes = createMultipleNPCs(5); // NPCs adversários
+  npcSnakes.forEach(npc => {
+    npc.body[0].x = randomPosition();
+    npc.body[0].y = randomPosition();
+  });
+  food = spawnFood(5); // Gerar várias bolinhas de comida
+  score = 0;
+  lives = 3;
+  isGameOver = false;
+  document.getElementById("gameOver").style.display = "none";
+
+  clearInterval(gameInterval);
+  gameInterval = setInterval(gameLoop, speed); // Usando um intervalo controlado por variável
+}
+
+function gameLoop() {
+  if (isGameOver) return;
+
+  moveSnake(snake);
+
+  npcSnakes.forEach(npc => {
+    moveNPC(npc);
+  });
+
+  if (checkCollision(snake)) {
+    handleLifeLoss();
+    return;
+  }
+
+  npcSnakes.forEach(npc => {
+    if (checkCollision(npc)) {
+      npc.alive = false;
+    }
+  });
+
+  draw();
+}
+
+function moveSnake(snakeObj) {
+  const head = { ...snakeObj.body[0] };
+
+  switch (snakeObj.direction) {
+    case "RIGHT": head.x += gridSize; break;
+    case "LEFT": head.x -= gridSize; break;
+    case "UP": head.y -= gridSize; break;
+    case "DOWN": head.y += gridSize; break;
+  }
+
+  snakeObj.body.unshift(head);
+
+  // Verificar colisão com a comida
+  food.forEach((foodObj, index) => {
+    if (head.x === foodObj.x && head.y === foodObj.y) {
+      food.splice(index, 1); // Remover a bolinha comida
+      food.push(...spawnFood(1)); // Gerar uma nova bolinha de comida
+      score += 10; // Aumentar a pontuação
+      speed = Math.max(100, speed - 10); // Aumentar a velocidade conforme a pontuação
+      clearInterval(gameInterval);
+      gameInterval = setInterval(gameLoop, speed); // Atualizar intervalo com a nova velocidade
+    }
+  });
+
+  if (head.x === food.x && head.y === food.y) {
+    food = spawnFood(5);
+  } else {
+    snakeObj.body.pop();
+  }
+}
+
+function moveNPC(npc) {
+  if (!npc.alive) return;
+  const directions = ["UP", "DOWN", "LEFT", "RIGHT"];
+  if (Math.random() < 0.1) {
+    npc.direction = directions[Math.floor(Math.random() * 4)];
+  }
+  moveSnake(npc);
+}
+
+function checkCollision(snakeObj) {
+  const head = snakeObj.body[0];
+
+  // Paredes
+  if (
+    head.x < 0 || head.x >= canvasSize ||
+    head.y < 0 || head.y >= canvasSize
+  ) return true;
+
+  // Corpo da cobra
+  for (let i = 1; i < snakeObj.body.length; i++) {
+    if (head.x === snakeObj.body[i].x && head.y === snakeObj.body[i].y) {
+      return true;
+    }
+  }
+
+  // Outras cobras
+  const allSnakes = [snake, ...npcSnakes.filter(n => n.alive)];
+  for (let s of allSnakes) {
+    if (s === snakeObj) continue;
+    for (let part of s.body) {
+      if (head.x === part.x && head.y === part.y) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function handleLifeLoss() {
+  lives--;  // Perde uma vida
+  if (lives <= 0) {
+    endGame();  // Se não tiver mais vidas, termina o jogo
+  } else {
+    resetGame();  // Reinicia a posição da cobra e a comida
+  }
+}
+
+function resetGame() {
+  snake.body = [
+    { x: gridSize * 5, y: gridSize * 5 },
+    { x: gridSize * 4, y: gridSize * 5 },
+  ];
+  food = spawnFood(5);  // Gerar novas bolinhas de comida
+}
+
+function endGame() {
+  isGameOver = true;
+  clearInterval(gameInterval);
+  document.getElementById("gameOver").style.display = "block";
+  document.getElementById("gameOver").innerHTML = `
+    <h2>Você perdeu todas as vidas!</h2>
+    <button onclick="restartGame()">Tentar novamente</button>
+  `;
+}
+
+function restartGame() {
+  init();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvasSize, canvasSize);
+
+  drawFood(food);
+  drawSnake(snake);
+
+  npcSnakes.forEach(npc => {
+    if (npc.alive) drawSnake(npc);
+  });
+
+  // Exibir a pontuação e as vidas
+  ctx.fillStyle = "white";
+  ctx.font = "20px Arial";
+  ctx.fillText(`Pontuação: ${score}`, 10, 30);
+  ctx.fillText(`Vidas: ${lives}`, 10, 50);
+}
+
+function drawSnake(snakeObj) {
+  ctx.fillStyle = snakeObj.color;
+  snakeObj.body.forEach(part => {
+    ctx.fillRect(part.x, part.y, gridSize, gridSize);  // Desenha um quadrado para cada parte da cobra
+  });
+}
 
