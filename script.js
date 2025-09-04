@@ -199,20 +199,3 @@ function endGame() {
 
 function restartGame() {
   init();  // Reinicia o jogo
-}
-
-function draw() {
-  ctx.clearRect(0, 0, canvasSize, canvasSize);
-
-  drawFood(food);
-  drawSnake(snake);
-
-  npcSnakes.forEach(npc => {
-    if (npc.alive) drawSnake(npc);
-  });
-
-  // Exibir a pontuação e as vidas
-  ctx.fillStyle = "white";
-  ctx.font = "20px Arial";
-  ctx.fillText(`Pontuação: ${score}`, 10, 30);
-  ctx.fillText(`Vidas: ${
