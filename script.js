@@ -14,7 +14,7 @@ let direction;
 let npcSnakes;
 let gameInterval;
 let isGameOver = false;
-let lives = 3;
+let lives = 5;  // Agora o jogador começa com 5 vidas
 let speed = initialSpeed;
 let score = 0;
 
@@ -66,7 +66,7 @@ function init() {
   });
   food = spawnFood(10); // Gerar mais bolinhas de comida
   score = 0;
-  lives = 3;
+  lives = 5; // O jogador começa com 5 vidas
   isGameOver = false;
   document.getElementById("gameOver").style.display = "none";
 
@@ -234,5 +234,6 @@ function drawFood(foodObj) {
   );
   ctx.fill();
 }
+
 
 
