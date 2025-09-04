@@ -2,7 +2,10 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 const gridSize = 20;
-const canvasSize = canvas.width;
+const canvasSize = 800;  // Aumentei o tamanho do canvas
+
+canvas.width = canvasSize;
+canvas.height = canvasSize;
 
 let snake;
 let food;
@@ -25,10 +28,18 @@ function createSnake(color) {
   };
 }
 
+function createMultipleNPCs(num) {
+  let npcs = [];
+  for (let i = 0; i < num; i++) {
+    npcs.push(createSnake(`hsl(${Math.random() * 360}, 100%, 50%)`));
+  }
+  return npcs;
+}
+
 function spawnFood() {
   return {
-    x: randomPosition(),
-    y: randomPosition(),
+    x: randomPosition() + gridSize,  // Adicionando uma margem
+    y: randomPosition() + gridSize,  // Adicionando uma margem
     color: `hsl(${Math.random() * 360}, 100%, 50%)`
   };
 }
@@ -40,7 +51,7 @@ function init() {
     { x: gridSize * 4, y: gridSize * 5 },
   ];
   direction = "RIGHT";
-  npcSnakes = [createSnake("red"), createSnake("blue")];
+  npcSnakes = createMultipleNPCs(5);  // Agora com 5 NPCs
   npcSnakes.forEach(npc => {
     npc.body[0].x = randomPosition();
     npc.body[0].y = randomPosition();
@@ -50,7 +61,7 @@ function init() {
   document.getElementById("gameOver").style.display = "none";
 
   clearInterval(gameInterval);
-  gameInterval = setInterval(gameLoop, 100);
+  gameInterval = setInterval(gameLoop, 200);  // Aumentei o tempo entre os movimentos
 }
 
 function gameLoop() {
